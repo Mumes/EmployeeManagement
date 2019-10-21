@@ -37,6 +37,7 @@ namespace EmployeeManagement
                 app.UseDeveloperExceptionPage();
             }
             app.UseMvcWithDefaultRoute();
+            app.UseStaticFiles();
             //app.UseRouting();
             //app.Use(async (context, next) =>
             //{

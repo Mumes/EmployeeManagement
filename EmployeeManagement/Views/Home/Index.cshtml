@@ -1,23 +1,20 @@
 ﻿@model IEnumerable<Employee>
 @{
-    ViewBag.Title= "Employee list";
-}  
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var emp in Model)
-                {
-                    <tr>
-                        <td>@emp.Id</td>
-                        <td>@emp.Name</td>
-                        <td>@emp.Department</td>
-                    </tr>
-                 }
-            </tbody>
-        </table>
+    ViewBag.Title = "Employee list";
+}
+    <div class="card-deck">
+        @foreach (var emp in Model)
+        {
+        <div class="card m-3">
+            <div class="card-header">
+                <h3> @emp.Name</h3>
+            </div>
+            <img class="card-img-top" src="~/images/noimage.jpg" alt=@string.Format($"{emp.Name}-no image") />
+            <div class="card-footer text-center">
+                <a href="#" class="btn btn-primary">View</a>
+                <a href="#" class="btn btn-primary">Edit</a>
+                <a href="#" class="btn btn-primary">Delete</a>
+            </div>
+        </div>
+        }
+    </div>     
