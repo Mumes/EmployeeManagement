@@ -8,27 +8,31 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
-    public class HomeController:Controller
+    public class HomeController : Controller
     {
         private readonly IEmployeeRepository employeeRepository;
 
         public HomeController(IEmployeeRepository employeeRepository)
         {
-            this.employeeRepository  = employeeRepository;
+            this.employeeRepository = employeeRepository;
         }
         public ViewResult Index()
         {
-            var model=employeeRepository.GetAllEmployees();
+            var model = employeeRepository.GetAllEmployees();
             return View(model);
         }
-        public ViewResult Details(int id=1)
+        public ViewResult Details(int id = 1)
         {
             HomeDetailsViewModel hdv = new HomeDetailsViewModel()
             {
                 PageTitle = "Employee details",
                 Emp = employeeRepository.GetEmployee(id)
-            };            
+            };
             return View(hdv);
         }
+        public ViewResult Create()
+        {
+            return View();
+        } 
     }
 }
