@@ -20,6 +20,20 @@ namespace EmployeeManagement.Models
             };
         }
 
+        public Employee Add(Employee emp)
+        {
+            emp.Id=employeeList.Max(e => e.Id)+1;
+            employeeList.Add(emp);
+            return emp;
+        }
+
+        public Employee Delete(int id)
+        {
+            Employee emp = employeeList.FirstOrDefault(e => e.Id == id);
+            if(emp!=null) employeeList.Remove(emp);
+            return emp;
+        }
+
         public IEnumerable<Employee> GetAllEmployees()
         {
             return employeeList;
@@ -28,6 +42,18 @@ namespace EmployeeManagement.Models
         public Employee GetEmployee(int id)
         {
             return employeeList.FirstOrDefault(c => c.Id == id);
+        }
+
+        public Employee Update(Employee changesEmployee)
+        {
+            Employee emp = employeeList.FirstOrDefault(e => e.Id == changesEmployee.Id);
+            if (emp != null)
+            {
+                emp.Email = changesEmployee.Email;
+                emp.Name = changesEmployee.Name;
+                emp.Department = changesEmployee.Department;
+            }
+            return emp;
         }
     }
 }
