@@ -13,9 +13,9 @@ namespace EmployeeManagement.Controllers
 {
     public class ErrorController : Controller
     {
-        private readonly ILogger logger;
+        private readonly ILogger<ErrorController> logger;
 
-        public ErrorController(ILogger logger)
+        public ErrorController(ILogger<ErrorController> logger)
         {
             this.logger = logger;
         }
@@ -23,12 +23,14 @@ namespace EmployeeManagement.Controllers
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int? statusCode = null)
         {
+            var exeptionDetails = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
             if (statusCode.HasValue)
             {
                 switch (statusCode)
                 {
                     case 404:
                         ViewBag.ErrorMessage = "Cannot find resorce";
+                        logger.LogWarning($"404 error occure on the path {exeptionDetails.OriginalPath} and query string {exeptionDetails.OriginalQueryString}");
                         break;
                     default:
                         ViewBag.ErrorMessage = "Unexpected error";
@@ -44,6 +46,7 @@ namespace EmployeeManagement.Controllers
         public IActionResult Error()
         {
             var exeptionDetails = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            logger.LogError($"This path {exeptionDetails.Path} raised an exeption {exeptionDetails.Error}");
             ViewBag.ExeptionPath = exeptionDetails.Path;
             ViewBag.ExeptionMessage = exeptionDetails.Error.Message;
             ViewBag.ExeptionTrace = exeptionDetails.Error.StackTrace;

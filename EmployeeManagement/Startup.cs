@@ -6,6 +6,7 @@ using EmployeeManagement.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -24,7 +25,14 @@ namespace EmployeeManagement
             services.AddDbContextPool<AppDbContext>(options=>options.UseSqlServer(config.GetConnectionString("EmployeeDbConection")));
             services.AddMvc(options => options.EnableEndpointRouting=false);
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
-            
+            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores< AppDbContext>();
+            services.Configure<IdentityOptions>(o =>
+                    {
+                        o.Password.RequireLowercase = false;
+                        o.Password.RequireNonAlphanumeric = false;
+                        o.Password.RequiredLength = 5;
+                    }
+                );
             
         }
         public IConfiguration config;
@@ -45,8 +53,10 @@ namespace EmployeeManagement
                 app.UseStatusCodePagesWithReExecute("/Error/{0}");
             }
 
-            app.UseMvcWithDefaultRoute();
             app.UseStaticFiles();
+            app.UseAuthentication();
+            app.UseMvcWithDefaultRoute();
+           
 
             //app.UseRouting();
             //app.Use(async (context, next) =>

@@ -1,8 +1,12 @@
-﻿@{ 
+﻿@{
     ViewBag.Title = "Not found";
 }
 
-<h1>@ViewBag.ErrorMessage</h1>
+<div class="alert alert-info mt-1 mb-1">
+    <h3> Error 404.</h3>
+    <hr />
+    <h3> Cannot find resource</h3>
+</div>
 <div>
     <a asp-controller="home" asp-action="index" class="btn btn-danger" style="width:auto">Main page </a>
 </div>

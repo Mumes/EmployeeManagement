@@ -1,10 +1,11 @@
 ﻿@{
     ViewBag.Title = "Custom error";
 }
-
-<h5>@ViewBag.ExeptionMessage </h5>
-<h5>@ViewBag.ExeptionPath    </h5>
-<h5>@ViewBag.ExeptionTrace   </h5>
+<div class="alert alert-info mt-1 mb-1">
+    <h3>En error occured.</h3>
+    <hr />
+    <h3>Custom error</h3>
+</div>
 <div>                        
     <a asp-controller="home" asp-action="index" class="btn btn-danger" style="width:auto">Main page </a>
 </div>

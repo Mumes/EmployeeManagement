@@ -2,6 +2,7 @@
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,11 +16,14 @@ namespace EmployeeManagement.Controllers
         private readonly IEmployeeRepository employeeRepository;
 
         private readonly IWebHostEnvironment hostingEnviroment;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(IEmployeeRepository employeeRepository, IWebHostEnvironment hostingEnviroment)
+        public HomeController(IEmployeeRepository employeeRepository, IWebHostEnvironment hostingEnviroment, ILogger<HomeController> logger)
         {
+           
             this.employeeRepository = employeeRepository;
             this.hostingEnviroment = hostingEnviroment;
+            this.logger = logger;
         }
         public ViewResult Index()
         {
@@ -32,7 +36,7 @@ namespace EmployeeManagement.Controllers
             if (emp ==null)
             {
                 Response.StatusCode = 404;
-                return View("EmployeeNotFound",id);
+               // return View("EmployeeNotFound",id);
             }
             HomeDetailsViewModel hdv = new HomeDetailsViewModel()
             {
