@@ -36,8 +36,7 @@ namespace EmployeeManagement.Controllers
                         ViewBag.ErrorMessage = "Unexpected error";
                         break;
                 }
-            }
-           
+            }           
             return View("NotFound");
         }
 

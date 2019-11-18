@@ -1,5 +1,6 @@
 ﻿using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,11 +26,13 @@ namespace EmployeeManagement.Controllers
             this.hostingEnviroment = hostingEnviroment;
             this.logger = logger;
         }
+        [AllowAnonymous]
         public ViewResult Index()
         {
             var model = employeeRepository.GetAllEmployees();
             return View(model);
         }
+        [AllowAnonymous]
         public ViewResult Details(int id = 1)
         {
             var emp = employeeRepository.GetEmployee(id);
@@ -46,11 +49,13 @@ namespace EmployeeManagement.Controllers
             return View(hdv);
         }
         [HttpGet]
+        [Authorize]
         public ViewResult Create()
         {
             return View();
         }
         [HttpPost]
+        [Authorize]
         public IActionResult Create(EmployeeCreateViewModel model)
         {
             if (ModelState.IsValid)
@@ -69,6 +74,7 @@ namespace EmployeeManagement.Controllers
             return View();
         }
         [HttpGet]
+        [Authorize]
         public ViewResult Edit(int id)
         {
             var emp = employeeRepository.GetEmployee(id);
@@ -85,6 +91,7 @@ namespace EmployeeManagement.Controllers
             return View(empViewModel);
         }
         [HttpPost]
+        [Authorize]
         public IActionResult Edit(EmployeeEditViewModel model)
         {
             if (ModelState.IsValid)
@@ -110,7 +117,7 @@ namespace EmployeeManagement.Controllers
             }
             return View();
         }
-
+        [Authorize]
         public IActionResult Delete(int id)
         {
             var emp = employeeRepository.GetEmployee(id);
