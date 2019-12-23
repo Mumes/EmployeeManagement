@@ -1,11 +1,26 @@
 ﻿@{
     ViewBag.Title = "Custom error";
 }
-<div class="alert alert-info mt-1 mb-1">
-    <h3>En error occured.</h3>
-    <hr />
-    <h3>Custom error</h3>
-</div>
-<div>                        
-    <a asp-controller="home" asp-action="index" class="btn btn-danger" style="width:auto">Main page </a>
-</div>
+@if (ViewBag.ErrorTitle == null)
+{
+    <div class="alert alert-info mt-1 mb-1">
+        <h3>En error occured.</h3>
+        <hr />
+        <h3>Custom error</h3>
+        @ViewBag.ExeptionMessage
+    </div>
+    <div>
+        <a asp-controller="home" asp-action="index" class="btn btn-danger" style="width:auto">Main page </a>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-1 mb-1">
+        <h3>@ViewBag.ErrorTitle</h3>
+        <hr />
+        <h3>@ViewBag.ErrorMessage</h3>
+    </div>
+    <div>
+        <a asp-controller="home" asp-action="index" class="btn btn-danger" style="width:auto">Main page </a>
+    </div>
+}

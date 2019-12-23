@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManagement.Models;
+using EmployeeManagement.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 
 namespace EmployeeManagement
 {
@@ -43,6 +45,30 @@ namespace EmployeeManagement
                         o.Password.RequiredLength = 5;
                     }
                 );
+            services.AddAuthorization(options =>
+              {
+                  options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("Delete Role","true"));
+                  // options.AddPolicy("EditRolePolicy", policy => policy.RequireAssertion(context =>
+                  //                                       context.User.IsInRole("Admin") &&
+                  //                                       context.User.HasClaim(claim => claim.Type == "Edit Role"&&claim.Value=="true") ||
+                  //                                       context.User.IsInRole("SuperAdmin")
+                  // )) ;
+                  options.AddPolicy("EditRolePolicy", policy => policy.AddRequirements(new ManageAdminRolesAndClaimRequirement()));
+                  options.AddPolicy("AdminRolePolicy", policy => policy.RequireRole("Admin", "true"));
+              }          
+                );
+            services.AddAuthentication()
+                .AddGoogle(options=>
+                {
+                    options.ClientId = "524423355530-m0ssoaelprpr79jtdf349qbtag7eq0io.apps.googleusercontent.com";
+                    options.ClientSecret = "Q0UhX6RN8OpF5ylaZIuiHS0O";
+                });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = new PathString("/Administration/AccessDenied");
+            });
+            services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherClaimsAndRolesHandler>();
+            services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
             
         }
         public IConfiguration config;

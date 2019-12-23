@@ -3,35 +3,67 @@
 @{
     ViewBag.Title = "Login User";
 }
-<h3></h3>
-<form enctype="multipart/form-data" asp-route-returnurl="@ViewBag.ReturnUrl" asp-controller="account" asp-action="login" method="post" class="mt-3">
-    <div class="form-group row">
-        <label asp-for="Email" class="col-sm-2 col-form-label"></label>
-        <div class="cal-sm-10">
-            <input asp-for="Email" class=" form-control" placeholder="Email" />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label asp-for="Password" class="col-sm-2 col-form-label"></label>
-        <div class="cal-sm-10">
-            <input asp-for="Password" class=" form-control" placeholder="Password" />
-            <span asp-validation-for="Password" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="checkbox"></div>
-        <label asp-for="RememberMe" >
-            <input asp-for="RememberMe" />
-            @Html.DisplayNameFor(m => m.RememberMe)
-        </label>
-    </div>
-    <div asp-validation-summary="All" class="text-danger">
 
-    </div>
-    <div class="form-group row">
-        <div class="col-sm-10">
-            <button type="submit" class="btn btn-primary">Login </button>
+
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Local Account Login</h3>
+            <hr />
+            <form enctype="multipart/form-data" asp-route-returnurl="@ViewBag.ReturnUrl" asp-controller="account" asp-action="login" method="post" class="mt-3">
+                <div class="form-group row">
+                    <label asp-for="Email" class="col-sm-2 col-form-label"></label>
+                    <div class="cal-sm-10">
+                        <input asp-for="Email" class=" form-control" placeholder="Email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label asp-for="Password" class="col-sm-2 col-form-label"></label>
+                    <div class="cal-sm-10">
+                        <input asp-for="Password" class=" form-control" placeholder="Password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="checkbox"></div>
+                    <label asp-for="RememberMe">
+                        <input asp-for="RememberMe" />
+                        @Html.DisplayNameFor(m => m.RememberMe)
+                    </label>
+                </div>
+                <div asp-validation-summary="All" class="text-danger">
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Login </button>
+                    </div>
+                </div>
+            </form>
         </div>
-    </div>
-</form>
+        <div class="col-md-6">
+            <h3>External Account Login</h3>
+            <hr/>
+            @{
+                if (Model.ExternalLogins.Count == 0)
+                {
+                    <div>No extrernal providers configured</div>
+                }
+                else
+                {
+                <form enctype="multipart/form-data" asp-route-returnurl="@Model.ReturnUrl" 
+                                asp-controller="account" asp-action="externallogin" method="post" class="mt-3">
+                    @foreach ( var provider in Model.ExternalLogins)
+                    {
+                    <button type="submit" class="btn btn-primary"
+                            value="@provider.Name" name="provider"
+                            title="Logging using your @provider.DisplayName account">
+                        @provider.DisplayName
+                        </button>
+                    }
+                </form>
+            }
+            }
+</div>
+        </div>

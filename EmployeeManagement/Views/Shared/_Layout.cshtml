@@ -22,8 +22,11 @@
               asp-fallback-test-class="sr-only"
               asp-fallback-test-property="position"
               asp-fallback-test-value="absolute"
-              asp-suppress-fallback-integrity="true"
-        />
+              asp-suppress-fallback-integrity="true" />
+        <script src="~/lib/jquery/jquery.js"></script>
+        <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
     </environment>
     <link href="~/css/site.css" rel="stylesheet" />
     <title>@ViewBag.Title</title>
@@ -32,9 +35,9 @@
     <div class="container">
         <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
             <a class="navbar-brand" asp-action="index" asp-controller="home">
-                <img src="~/images/logo.png" height="30" width="30"/>
+                <img src="~/images/logo.png" height="30" width="30" />
             </a>
-            <button type ="button" class="navbar-toggler" data-toggle="collapse" data-target="#CollapseNavBar">
+            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#CollapseNavBar">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar navbar-collapse" id="CollapseNavBar">
@@ -45,12 +48,13 @@
                     <li class="nav-item">
                         <a asp-action="create" asp-controller="home" class="nav-link">Create</a>
                     </li>
-                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                    @if (signInManager.IsSignedIn(User) && User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
                     {
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" id="navBarDropDownMenuLink"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Manage </a>
+                                Manage
+                            </a>
                             <div class="dropdown-menu" aria-labelledby="navBarDropDownMenuLink">
                                 <a asp-action="listusers" asp-controller="administration" class="dropdown-item">Users </a>
                                 <a asp-action="listroles" asp-controller="administration" class="dropdown-item">Roles </a>
@@ -64,12 +68,12 @@
                     {
                         <li class="nav-item ml-auto">
                             <form method="post" asp-action="logout" asp-controller="account" class="nav-link">
-                            
+
                                 <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
                                     Logout @User.Identity.Name
                                 </button>
                             </form>
-                            
+
                         </li>
                     }
                     else
@@ -82,15 +86,16 @@
                         </li>
                     }
 
-                    </ul>
-</div>
+                </ul>
+            </div>
         </nav>
-        <div >
+        <div>
             @RenderBody()
         </div>
-        @if(IsSectionDefined("Scripts"))
+        @if (IsSectionDefined("Scripts"))
         {
-            @RenderSection("Scripts",required:true)
+            @RenderSection("Scripts", required: true)
+            
         }
     </div>
 </body>

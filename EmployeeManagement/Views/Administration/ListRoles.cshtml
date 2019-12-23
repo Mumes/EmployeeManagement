@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<IdentityRole>
+@using Microsoft.AspNetCore.Authorization;
+@inject IAuthorizationService authorizationService
 @{
     ViewBag.Title = "List Roles";
 }
@@ -20,12 +22,30 @@
                 <h5 class="card-title">
                     Role name: @role.Name
                 </h5>
-                <a class="btn btn-primary" style="width:auto" asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id">
-                    Edit role
-                </a>
-                <a class="btn btn-danger" style="width:auto" asp-controller="Administration" asp-action="DeleteRole" asp-route-id="@role.Id">
-                    Delete role
-                </a>
+
+
+
+                <form method="post" asp-controller="administration" asp-route-id="@role.Id" asp-action="deleterole">
+                    @if ((await authorizationService.AuthorizeAsync(User, "EditRolePolicy")).Succeeded)
+                    {
+                        <a class="btn btn-primary" style="width:auto" asp-controller="Administration" asp-action="EditRole" asp-route-id="@role.Id">
+                            Edit
+                        </a>
+                    }
+                    @if ((await authorizationService.AuthorizeAsync(User, "DeleteRolePolicy")).Succeeded)
+                    {
+                        <span id="ConfirmDeleteSpan_@role.Id" style="display:none">
+                            <span>Are you sure you want to delete role?</span>
+                            <button type="submit" class="btn btn-danger">Yes</button>
+                            <a href="#" class="btn btn-primary" onclick="confirmDelete('@role.Id', false)"> No </a>
+                        </span>
+                        <span id="DeleteSpan_@role.Id">
+                            <a href="#" class="btn btn-danger" onclick="confirmDelete('@role.Id',true)"> Delete </a>
+                        </span>
+                    }
+                    </form>
+
+
             </div>
         </div>
     }
@@ -45,4 +65,8 @@ else
             </a>
         </div>
     </div>
+}
+
+@section Scripts {
+    <script src="~/js/CustomScript.js"></script>
 }

@@ -16,8 +16,12 @@ namespace EmployeeManagement.Models
         public DbSet<Employee> Employees { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating( modelBuilder);
+            base.OnModelCreating( modelBuilder);          
             modelBuilder.Seed();
+            foreach (var foreighKey in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+            {
+                foreighKey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
