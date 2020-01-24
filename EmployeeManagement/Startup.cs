@@ -43,6 +43,7 @@ namespace EmployeeManagement
                         o.Password.RequireLowercase = false;
                         o.Password.RequireNonAlphanumeric = false;
                         o.Password.RequiredLength = 5;
+                        o.SignIn.RequireConfirmedEmail=true;
                     }
                 );
             services.AddAuthorization(options =>
@@ -62,7 +63,12 @@ namespace EmployeeManagement
                 {
                     options.ClientId = "524423355530-m0ssoaelprpr79jtdf349qbtag7eq0io.apps.googleusercontent.com";
                     options.ClientSecret = "Q0UhX6RN8OpF5ylaZIuiHS0O";
-                });
+                })
+                .AddFacebook(options=>
+                {
+                    options.AppId = "529730280979678";
+                    options.AppSecret = "caa5a641c281f8ec057a02f0074e9c22";
+                 });
             services.ConfigureApplicationCookie(options =>
             {
                 options.AccessDeniedPath = new PathString("/Administration/AccessDenied");

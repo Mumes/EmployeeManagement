@@ -99,8 +99,17 @@ namespace EmployeeManagement.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model,string returnUrl)
         {
+            model.ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var user = await userManager.FindByEmailAsync(model.Email);
+
+                if (user != null && !user.EmailConfirmed && (await userManager.CheckPasswordAsync(user,model.Password)))
+                {
+                    ModelState.AddModelError("", "Email not confirmed");
+                    return View(model);
+                }
+
                 var result = await signInManager.PasswordSignInAsync(model.Email,model.Password,model.RememberMe,false);
                 if (result.Succeeded)
                 {
@@ -155,6 +164,19 @@ namespace EmployeeManagement.Controllers
                 ModelState.AddModelError(string.Empty, $"Error loading external login error information");
                 return View("Login", loginViewModel);
             }
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = null;
+            if (email != null)
+            {
+                user = await userManager.FindByEmailAsync(email);
+                if (user != null && !user.EmailConfirmed)
+                {
+                    ModelState.AddModelError(string.Empty, $"Email not confirmed yet");
+                    return View("Login", loginViewModel);
+                }
+            }
+
             var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, 
                                                                                 isPersistent: false, bypassTwoFactor: true);
             if (signInResult.Succeeded)
@@ -162,12 +184,25 @@ namespace EmployeeManagement.Controllers
                 return LocalRedirect(returnUrl);
             }
             else
-            {
-                var email = info.Principal.FindFirst(ClaimTypes.Email);
+            {                             
                 if(email!= null)
                 {
-                    var user = await
+                    if (user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                            Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        };
+                        await userManager.CreateAsync(user);
+                    }
+                    await userManager.AddLoginAsync(user, info);
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
+                ViewBag.ErrorTitle = $"Email claim not reccived from {info.LoginProvider}";
+                ViewBag.ErrorMessage = $"Please contact administration";
+                return View("Error");
             }
         }
     }
